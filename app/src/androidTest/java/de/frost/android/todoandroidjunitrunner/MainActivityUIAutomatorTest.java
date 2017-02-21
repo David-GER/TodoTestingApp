@@ -82,7 +82,7 @@ public class MainActivityUIAutomatorTest {
         );
 
         assertTrue(emptyView.exists());
-        assertEquals("There are\nno ToDos!", emptyView.getText());
+        assertEquals("There are no ToDos!", emptyView.getText());
 
         assertTrue(addButton.exists());
         assertTrue(addButton.isEnabled());

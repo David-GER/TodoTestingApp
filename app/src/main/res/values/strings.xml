@@ -3,5 +3,5 @@
     <string name="save">Save</string>
     <string name="add_todo">Add ToDo</string>
     <string name="todo_description">Todo description</string>
-    <string name="empty_text">There are no\nToDos!</string>
+    <string name="empty_text">There are no ToDos!</string>
 </resources>
