@@ -31,7 +31,8 @@ public class TodoActivityTest {
 
     @Test
     public void onCreate() throws Exception {
-        onView(withId(R.id.btn_save)).check(matches(not(isEnabled())));
+        onView(withId(R.id.btn_save))
+                .check(matches(not(isEnabled())));
     }
 
     @Test
@@ -39,7 +40,8 @@ public class TodoActivityTest {
         onView(withId(R.id.description))
                 .perform(typeText("Testing with Espresso!"));
 
-        onView(withId(R.id.btn_save)).check(matches(isEnabled()));
+        onView(withId(R.id.btn_save))
+                .check(matches(isEnabled()));
 
         onView(withId(R.id.description))
                 .perform(clearText());
@@ -63,7 +65,7 @@ public class TodoActivityTest {
 
         final int mResultCode = codeField.getInt(rule.getActivity());
         final Intent mResultData = (Intent) dataField.get(rule.getActivity());
-        final Todo todo = (Todo) mResultData.getSerializableExtra(TodoActivity.TODO_EXTRA);
+        final Todo todo = (Todo) mResultData.getParcelableExtra(TodoActivity.TODO_EXTRA);
 
         assertTrue("The result code is not ok. ", mResultCode == Activity.RESULT_OK);
         assertEquals("Description is wrong!", debugDesc, todo.getDescription());

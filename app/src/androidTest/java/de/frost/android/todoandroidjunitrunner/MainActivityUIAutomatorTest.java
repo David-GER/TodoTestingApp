@@ -3,9 +3,11 @@ package de.frost.android.todoandroidjunitrunner;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
 import android.support.test.filters.SdkSuppress;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -91,7 +93,7 @@ public class MainActivityUIAutomatorTest {
 
         addButton.click();
 
-        //to the todo activity
+        //to the to do activity
         assertFalse(addButton.exists());
 
         UiObject saveButton = mDevice.findObject(
@@ -103,6 +105,8 @@ public class MainActivityUIAutomatorTest {
                 new UiSelector().resourceId("de.frost.android.todoandroidjunitrunner:id/description")
                         .className("android.widget.EditText")
         );
+
+//        Espresso.closeSoftKeyboard();
 
         assertTrue(saveButton.exists());
         assertTrue(descriptionEditText.exists());
@@ -135,5 +139,55 @@ public class MainActivityUIAutomatorTest {
         assertTrue(child.exists());
         assertEquals(tempTodoDesc, child.getText());
 
+    }
+
+    @Ignore
+    @Test
+    public void loadImageFromGallery() throws Exception {
+        UiObject addButton = mDevice.findObject(
+                new UiSelector().resourceId("de.frost.android.todoandroidjunitrunner:id/addTodo")
+                        .className("android.widget.Button")
+        );
+
+        addButton.click();
+
+        UiObject descriptionEditText = mDevice.findObject(
+                new UiSelector().resourceId("de.frost.android.todoandroidjunitrunner:id/description")
+                        .className("android.widget.EditText")
+        );
+
+        descriptionEditText.setText("Image Test!");
+
+        UiObject imageChoser = mDevice.findObject(
+                new UiSelector().resourceId("de.frost.android.todoandroidjunitrunner:id/choseImage")
+                        .className("android.widget.ImageView")
+        );
+
+        assertTrue(imageChoser.exists());
+
+        imageChoser.click();
+
+        UiObject allowPermitDialog = mDevice.findObject(
+                new UiSelector().resourceId("com.android.packageinstaller:id/permission_allow_button")
+                        .className("android.widget.Button")
+        );
+
+        if (allowPermitDialog.exists()) {
+            allowPermitDialog.click();
+        }
+
+        Log.d("UIA", "loadImageFromGallery: " + mDevice.getProductName());
+
+        final int clickX = 100;
+        final int clickY = 200;
+
+        mDevice.click(clickX, clickY); //click on first image
+
+        UiObject saveButton = mDevice.findObject(
+                new UiSelector().resourceId("de.frost.android.todoandroidjunitrunner:id/btn_save")
+                        .className("android.widget.Button")
+        );
+
+        saveButton.click();
     }
 }

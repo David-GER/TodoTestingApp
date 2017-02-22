@@ -1,23 +1,44 @@
 package de.frost.android.todoandroidjunitrunner;
 
+import android.Manifest;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import de.frost.android.todoandroidjunitrunner.model.Todo;
-import de.frost.android.todoandroidjunitrunner.model.TodoManager;
 
 public class TodoActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
     public static final String TODO_EXTRA = "TODO_EXTRA";
+    private static final int REQUEST_IMAGE = 1002;
+    private static final int REQUEST_READ_EXTERNAL_STORAGE = 1003;
     private Button btn_save;
     private EditText et_description;
+    private ImageView choseImage;
+
+    private Todo currentTodo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,24 +47,117 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
 
         btn_save = (Button) findViewById(R.id.btn_save);
         et_description = (EditText) findViewById(R.id.description);
+        choseImage = (ImageView) findViewById(R.id.choseImage);
 
         btn_save.setEnabled(false);
 
         et_description.addTextChangedListener(this);
 
         btn_save.setOnClickListener(this);
+        choseImage.setOnClickListener(this);
+
+        currentTodo = new Todo();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_IMAGE:
+
+                if (resultCode == RESULT_OK) {
+
+                    final Uri imageUri = data.getData();
+
+                    this.currentTodo.setImage(imageUri);
+
+                    Picasso.with(this)
+                            .load(imageUri)
+                            .resize(100, 100)
+                            .networkPolicy(NetworkPolicy.OFFLINE)
+                            .placeholder(R.mipmap.ic_launcher)
+                            .into(choseImage);
+                }
+
+                break;
+            default:
+                throw new IllegalArgumentException("Request code is invalid! " +
+                        requestCode);
+        }
     }
 
 
     @Override
     public void onClick(View v) {
-        Todo todo = new Todo(et_description.getText().toString());
+        switch (v.getId()) {
+            case R.id.btn_save:
+                this.currentTodo.setDescription(et_description.getText().toString());
 
-        Intent intent = new Intent();
-        intent.putExtra(TODO_EXTRA, todo);
+                Intent intent = new Intent();
+                intent.putExtra(TODO_EXTRA, currentTodo);
 
-        setResult(RESULT_OK, intent);
-        finish();
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
+            case R.id.choseImage:
+                if (askUserToGetImage()) {
+                    getImageFromGallery();
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("This should not happen! " + v.getId());
+        }
+    }
+
+    private void getImageFromGallery() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, REQUEST_IMAGE);
+    }
+
+    private boolean askUserToGetImage() {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_CONTACTS)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+                Toast.makeText(this, "I need this", Toast.LENGTH_SHORT).show();
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_READ_EXTERNAL_STORAGE);
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_READ_EXTERNAL_STORAGE:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay!
+                    getImageFromGallery();
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(this, "That's too bad ...", Toast.LENGTH_SHORT).show();
+                }
+        }
     }
 
     @Override

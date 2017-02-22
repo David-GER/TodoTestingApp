@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements TodoManagerListen
             case REQUEST_TODO:
 
                 if (resultCode == RESULT_OK) {
-                    Todo todo = (Todo) data.getSerializableExtra(TodoActivity.TODO_EXTRA);
+                    Todo todo = (Todo) data.getParcelableExtra(TodoActivity.TODO_EXTRA);
                     manager.put(todo);
 
                 } else {
