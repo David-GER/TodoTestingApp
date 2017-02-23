@@ -4,5 +4,8 @@
     <includeFilterFiles>
       <filter file="$PROJECT_DIR$/findbugs/findbugs-filter.xml" enabled="true" />
     </includeFilterFiles>
+    <excludeFilterFiles>
+      <filter file="$PROJECT_DIR$/findbugs/findbugs-android-exclude.xml" enabled="true" />
+    </excludeFilterFiles>
   </component>
 </project>
