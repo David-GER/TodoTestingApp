@@ -30,6 +30,8 @@ dependencies {
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:2.+"
+    testCompile "org.robolectric:robolectric:3.2.2"
+    testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1' // needed because strange robo bug?
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
