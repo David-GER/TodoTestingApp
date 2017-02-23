@@ -1,18 +1,15 @@
 package de.frost.android.todoandroidjunitrunner;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import de.frost.android.todoandroidjunitrunner.adapters.TodoAdapter;
-import de.frost.android.todoandroidjunitrunner.model.Todo;
 import de.frost.android.todoandroidjunitrunner.model.TodoManager;
-import de.frost.android.todoandroidjunitrunner.model.TodoManagerListener;
 
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_TODO = 1001;

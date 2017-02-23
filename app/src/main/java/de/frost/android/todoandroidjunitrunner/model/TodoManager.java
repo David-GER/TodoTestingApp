@@ -1,8 +1,5 @@
 package de.frost.android.todoandroidjunitrunner.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by david on 13.02.17.
  */
@@ -20,7 +17,8 @@ public class TodoManager {
     }
 
     public static TodoManager getInstance() {
-        if (manager == null) throw new IllegalStateException("This Manager has never been initialized!");
+        if (manager == null)
+            throw new IllegalStateException("This Manager has never been initialized!");
 
         return manager;
     }
@@ -48,6 +46,4 @@ public class TodoManager {
     public int removeAll() {
         return this.source.removeAll();
     }
-
-
 }
