@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 
 import de.frost.android.todoandroidjunitrunner.model.TodoContract.TodoEntry;
 
@@ -30,15 +29,6 @@ public class TodoDbHelper extends SQLiteOpenHelper implements TodoDataSource {
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TodoEntry.TABLE_NAME;
-
-    private final String[] projection = {
-            TodoEntry._ID,
-            TodoEntry.COLUMN_NAME_DESCRIPTION,
-            TodoEntry.COLUMN_NAME_IMAGE,
-            TodoEntry.COLUMN_NAME_LONGITUDE,
-            TodoEntry.COLUMN_NAME_LATITUDE,
-            TodoEntry.COLUMN_NAME_LOCATION
-    };
 
 
     public TodoDbHelper(Context context) {
@@ -126,7 +116,7 @@ public class TodoDbHelper extends SQLiteOpenHelper implements TodoDataSource {
     public TodoCursor queryAll() {
 
         // How you want the results sorted in the resulting Cursor
-        String sortOrder = TodoEntry._ID + " DESC";
+        String sortOrder = TodoEntry._ID + " ASC";
 
         Cursor cursor = getReadableDatabase().query(
                 TodoEntry.TABLE_NAME,                     // The table to query
@@ -137,7 +127,6 @@ public class TodoDbHelper extends SQLiteOpenHelper implements TodoDataSource {
                 null,                                     // don't filter by row groups
                 sortOrder                                 // The sort order
         );
-
 
         return new TodoCursor(cursor);
     }

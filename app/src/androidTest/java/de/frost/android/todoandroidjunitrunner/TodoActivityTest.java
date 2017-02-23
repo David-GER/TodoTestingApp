@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.test.espresso.Espresso;
 import android.support.test.rule.ActivityTestRule;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -49,6 +50,7 @@ public class TodoActivityTest {
         onView(withId(R.id.btn_save)).check(matches(not(isEnabled())));
     }
 
+    @Ignore
     @Test
     public void creatingTodo() throws Exception {
         final String debugDesc = "this is a test 1234!";

@@ -24,6 +24,9 @@ import android.util.Log;
 
 import java.io.File;
 
+import de.frost.android.todoandroidjunitrunner.model.TodoDbHelper;
+import de.frost.android.todoandroidjunitrunner.model.TodoManager;
+
 /**
  * Created by david on 20.02.17.
  */
@@ -63,8 +66,16 @@ public class MainActivityUIAutomatorTest {
                 LAUNCH_TIMEOUT);
     }
 
+    @Ignore
     @Test
     public void general() throws Exception {
+
+        TodoManager.init(
+                new TodoDbHelper(InstrumentationRegistry.getTargetContext())
+        );
+
+        TodoManager.getInstance().removeAll(); //TODO AFTER OTHER STUFF
+
         final String tempTodoDesc = "This is a automated todo!";
 
         //when starting the app the empty view will be shown.
@@ -84,7 +95,7 @@ public class MainActivityUIAutomatorTest {
         );
 
         assertTrue(emptyView.exists());
-        assertEquals("There are no ToDos!", emptyView.getText());
+        assertEquals("There are no Todos!", emptyView.getText());
 
         assertTrue(addButton.exists());
         assertTrue(addButton.isEnabled());
