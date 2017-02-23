@@ -8,35 +8,46 @@ import java.util.List;
  */
 
 public class TodoManager {
-    private List<Todo> list = new ArrayList<>();
-    private TodoManagerListener listener;
+    private TodoDataSource source;
+    private static TodoManager manager;
 
-    public int getSize() {
-        return this.list.size();
+    private TodoManager(TodoDataSource source) {
+        this.source = source;
     }
 
-    public void clear() {
-        this.list.clear();
+    public static void init(TodoDataSource dataSource) {
+        manager = new TodoManager(dataSource);
     }
 
-    public void put(Todo todo) {
-        this.list.add(todo);
+    public static TodoManager getInstance() {
+        if (manager == null) throw new IllegalStateException("This Manager has never been initialized!");
 
-        if (this.listener != null) this.listener.todoAdded(todo);
+        return manager;
+    }
+
+    public Todo query(long id) {
+        return this.source.query(id);
+    }
+
+    public TodoDbHelper.TodoCursor queryAll() {
+        return this.source.queryAll();
+    }
+
+    public void insert(Todo todo) {
+        this.source.insert(todo);
     }
 
     public void remove(Todo todo) {
-        this.list.remove(todo);
-        if (this.listener != null) this.listener.todoRemoved(todo);
+        this.source.remove(todo);
     }
 
-    public void remove(int index) {
-        Todo toBeRemoved = this.list.get(index);
-
-        this.remove(toBeRemoved);
+    public void remove(long index) {
+        this.source.remove(index);
     }
 
-    public void setListener(TodoManagerListener listener) {
-        this.listener = listener;
+    public int removeAll() {
+        return this.source.removeAll();
     }
+
+
 }

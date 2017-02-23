@@ -1,12 +1,12 @@
 package de.frost.android.todoandroidjunitrunner.adapters;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
+import android.database.Cursor;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,50 +15,55 @@ import com.squareup.picasso.Picasso;
 
 import de.frost.android.todoandroidjunitrunner.R;
 import de.frost.android.todoandroidjunitrunner.model.Todo;
+import de.frost.android.todoandroidjunitrunner.model.TodoDbHelper.TodoCursor;
 
 /**
  * Created by david on 20.02.17.
  */
 
-public class TodoAdapter extends ArrayAdapter<Todo> {
-    public TodoAdapter(@NonNull Context context) {
-        super(context, R.layout.item_todo);
+public class TodoAdapter extends CursorAdapter {
+
+    public TodoAdapter(Context context, Cursor c) {
+        super(context, c, false);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
-        TodoHolder holder = null;
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_todo, parent, false);
 
-        if (row == null) {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            row = inflater.inflate(R.layout.item_todo, parent, false);
+        TodoHolder viewHolder = new TodoHolder(view);
+        view.setTag(viewHolder);
+        return view;
+    }
 
-            holder = new TodoHolder();
-            holder.description = (TextView) row.findViewById(R.id.description);
-            holder.image = (ImageView) row.findViewById(R.id.image);
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        TodoHolder viewHolder = (TodoHolder) view.getTag();
 
-            row.setTag(holder);
-        } else {
-            holder = (TodoHolder) row.getTag();
-        }
+        TodoCursor todoCursor = new TodoCursor(cursor);
+        Todo todo = todoCursor.getTodo();
 
-        Todo todo = getItem(position);
-        holder.description.setText(todo.getDescription());
+        viewHolder.description.setText(todo.getDescription());
 
-        if (todo.getImage() != null) {
-            Picasso.with(getContext())
+        if (!TextUtils.isEmpty(todo.getImage())) {
+            Picasso.with(context)
                     .load(todo.getImage())
                     .networkPolicy(NetworkPolicy.OFFLINE)
                     .placeholder(R.mipmap.ic_launcher)
-                    .into(holder.image);
+                    .into(viewHolder.image);
+        } else {
+            viewHolder.image.setImageResource(R.mipmap.ic_launcher);
         }
 
-        return row;
     }
 
     static class TodoHolder {
         TextView description;
         ImageView image;
+
+        public TodoHolder(View view) {
+            description = (TextView) view.findViewById(R.id.description);
+            image = (ImageView) view.findViewById(R.id.image);
+        }
     }
 }

@@ -3,8 +3,6 @@ package de.frost.android.todoandroidjunitrunner;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -13,7 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,12 +22,8 @@ import android.widget.Toast;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 import de.frost.android.todoandroidjunitrunner.model.Todo;
+import de.frost.android.todoandroidjunitrunner.model.TodoManager;
 
 public class TodoActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
@@ -57,6 +53,18 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
         choseImage.setOnClickListener(this);
 
         currentTodo = new Todo();
+
+        findViewById(android.R.id.content).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (getCurrentFocus() != null) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -70,10 +78,10 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
 
                     final Uri imageUri = data.getData();
 
-                    this.currentTodo.setImage(imageUri);
+                    this.currentTodo.setImage(imageUri.toString());
 
                     Picasso.with(this)
-                            .load(imageUri)
+                            .load(currentTodo.getImage())
                             .resize(100, 100)
                             .networkPolicy(NetworkPolicy.OFFLINE)
                             .placeholder(R.mipmap.ic_launcher)
@@ -94,10 +102,9 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_save:
                 this.currentTodo.setDescription(et_description.getText().toString());
 
-                Intent intent = new Intent();
-                intent.putExtra(TODO_EXTRA, currentTodo);
+                TodoManager.getInstance().insert(currentTodo);
 
-                setResult(RESULT_OK, intent);
+                setResult(RESULT_OK);
                 finish();
                 break;
             case R.id.choseImage:
