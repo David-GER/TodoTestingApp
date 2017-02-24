@@ -4,18 +4,29 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import java.util.List;
 
 import de.frost.android.todoandroidjunitrunner.R;
 import de.frost.android.todoandroidjunitrunner.adapters.ImageAdapter;
+import de.frost.android.todoandroidjunitrunner.connection.RestClient;
+import de.frost.android.todoandroidjunitrunner.model.ImageModel;
+import de.frost.android.todoandroidjunitrunner.model.PixiImageResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by david on 24.02.17.
@@ -23,6 +34,7 @@ import de.frost.android.todoandroidjunitrunner.adapters.ImageAdapter;
 
 public class ImageListActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
+    private static final String TAG = ImageListActivity.class.getSimpleName();
     private EditText et_search;
     private Button btn_search;
     private RecyclerView recyclerView;
@@ -42,9 +54,9 @@ public class ImageListActivity extends AppCompatActivity implements View.OnClick
         et_search.addTextChangedListener(this);
         btn_search.setOnClickListener(this);
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+//        recyclerView.setHasFixedSize(true);
 
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new ImageAdapter();
         recyclerView.setAdapter(adapter);
 
@@ -58,6 +70,29 @@ public class ImageListActivity extends AppCompatActivity implements View.OnClick
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
+
+        RestClient.getInstance().loadImages(et_search.getText().toString(), new Callback<PixiImageResponse>() {
+            @Override
+            public void onResponse(Call<PixiImageResponse> call, Response<PixiImageResponse> response) {
+                Log.d(TAG, "onResponse: " + response.toString());
+
+                if (response.isSuccessful()) {
+                    List<ImageModel> body = response.body().getList();
+                    adapter.setItems(body);
+                } else {
+                    Toast.makeText(ImageListActivity.this, "There has been an error. Code :" + response.code(), Toast.LENGTH_LONG)
+                            .show();
+                }
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Call<PixiImageResponse> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage());
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     @Override

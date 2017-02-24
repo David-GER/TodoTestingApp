@@ -1,6 +1,7 @@
 package de.frost.android.todoandroidjunitrunner.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import de.frost.android.todoandroidjunitrunner.model.ImageModel;
  */
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
+    private static final String TAG = ImageAdapter.class.getSimpleName();
     private List<ImageModel> list;
 
     public ImageAdapter() {
@@ -29,6 +31,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d(TAG, "onCreateViewHolder: ");
 
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_image, parent, false);
@@ -41,14 +44,16 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        Log.d(TAG, "onBindViewHolder: " + position);
         ImageModel model = list.get(position);
 
-        holder.text.setText(model.getName());
+//        holder.text.setText(model.getName());
 
         Picasso.with(holder.itemView.getContext())
-                .load(model.getUrl())
+                .load(model.getPreview())
                 .networkPolicy(NetworkPolicy.NO_STORE)
+                .resize(100, 100)
+                .centerCrop()
                 .placeholder(R.mipmap.ic_launcher)
                 .into(holder.image);
     }
@@ -58,6 +63,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         return list.size();
     }
 
+    public void setItems(List<ImageModel> items) {
+        this.list = items;
+
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView text;
         public ImageView image;
@@ -65,7 +76,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         public ViewHolder(View view) {
             super(view);
 
-            text = (TextView) view.findViewById(R.id.text);
+//            text = (TextView) view.findViewById(R.id.text);
             image = (ImageView) view.findViewById(R.id.image);
         }
     }
