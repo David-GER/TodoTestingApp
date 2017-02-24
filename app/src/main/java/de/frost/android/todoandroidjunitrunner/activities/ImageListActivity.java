@@ -19,7 +19,10 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import de.frost.android.todoandroidjunitrunner.R;
+import de.frost.android.todoandroidjunitrunner.TodoApplication;
 import de.frost.android.todoandroidjunitrunner.adapters.ImageAdapter;
 import de.frost.android.todoandroidjunitrunner.adapters.ImageAdapterListener;
 import de.frost.android.todoandroidjunitrunner.connection.RestClient;
@@ -44,10 +47,15 @@ public class ImageListActivity extends AppCompatActivity implements View.OnClick
     private ImageAdapter adapter;
     private ProgressBar progressBar;
 
+    @Inject
+    public RestClient restClient;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_list);
+
+        ((TodoApplication)getApplication()).getNetComponent().inject(this);
 
         et_search = (EditText) findViewById(R.id.et_search);
         btn_search = (Button) findViewById(R.id.btn_search);
@@ -77,10 +85,9 @@ public class ImageListActivity extends AppCompatActivity implements View.OnClick
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
 
-        RestClient.getInstance().loadImages(et_search.getText().toString(), new Callback<PixiImageResponse>() {
+        this.restClient.loadImages(et_search.getText().toString(), new Callback<PixiImageResponse>() {
             @Override
             public void onResponse(Call<PixiImageResponse> call, Response<PixiImageResponse> response) {
-                Log.d(TAG, "onResponse: " + response.toString());
 
                 if (response.isSuccessful()) {
                     List<ImageModel> body = response.body().getList();
