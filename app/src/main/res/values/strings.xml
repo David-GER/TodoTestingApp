@@ -1,7 +1,14 @@
 <resources>
     <string name="app_name">TodoTestingApp</string>
     <string name="save">Save</string>
-    <string name="add_todo">Add ToDo</string>
+    <string name="add_todo">Add Todo</string>
     <string name="todo_description">Todo description</string>
     <string name="empty_text">There are no Todos!</string>
+    <string name="dialog_chose_image">Where do you want to get your image from?</string>
+    <string name="cancel">Cancel</string>
+
+    <string-array name="image_sources" >
+        <item>Internet</item>
+        <item>Gallery</item>
+    </string-array>
 </resources>

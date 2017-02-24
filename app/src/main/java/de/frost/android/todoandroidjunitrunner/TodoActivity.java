@@ -22,11 +22,13 @@ import android.widget.Toast;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import de.frost.android.todoandroidjunitrunner.dialog.ChooseImageSourceDialog;
 import de.frost.android.todoandroidjunitrunner.model.Todo;
 import de.frost.android.todoandroidjunitrunner.model.TodoManager;
 
-public class TodoActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
+public class TodoActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, ChooseImageSourceDialog.ChooseImageSourceDialogListener {
 
+    private static final String TAG = TodoActivity.class.getSimpleName();
     public static final String TODO_EXTRA = "TODO_EXTRA";
     private static final int REQUEST_IMAGE = 1002;
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 1003;
@@ -108,9 +110,11 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
                 finish();
                 break;
             case R.id.choseImage:
-                if (askUserToGetImage()) {
-                    getImageFromGallery();
-                }
+
+                ChooseImageSourceDialog dialog = new ChooseImageSourceDialog();
+                dialog.setListener(this);
+                dialog.show(getFragmentManager(), "CHOOSE_IMAGE");
+
                 break;
             default:
                 throw new IllegalArgumentException("This should not happen! " + v.getId());
@@ -180,5 +184,20 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void afterTextChanged(Editable s) {
         btn_save.setEnabled(!TextUtils.isEmpty(et_description.getText()));
+    }
+
+    @Override
+    public void done(int source) {
+        switch (source) {
+            case ChooseImageSourceDialog.IMAGE_SOURCE_INTERNET:
+                break;
+            case ChooseImageSourceDialog.IMAGE_SOURCE_GALLERY:
+                if (askUserToGetImage()) {
+                    getImageFromGallery();
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("This source does not exist! " + source);
+        }
     }
 }
