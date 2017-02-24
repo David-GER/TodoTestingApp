@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.view.textservice.TextInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -79,7 +80,6 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (requestCode) {
             case REQUEST_IMAGE_GALLERY:
-
                 if (resultCode == RESULT_OK) {
 
                     final Uri imageUri = data.getData();
@@ -89,7 +89,21 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
                     Picasso.with(this)
                             .load(currentTodo.getImage())
                             .resize(100, 100)
-                            .networkPolicy(NetworkPolicy.OFFLINE)
+                            .placeholder(R.mipmap.ic_launcher)
+                            .into(choseImage);
+                }
+
+                break;
+            case REQUEST_IMAGE_INTERNET:
+                if (resultCode == RESULT_OK) {
+                    this.currentTodo.setImage(data.getStringExtra(ImageListActivity.EXTRA_URL));
+
+                    Picasso.with(this)
+                            .load(currentTodo.getImage())
+                            .resize(100, 100)
+                            .centerCrop()
+                            .networkPolicy(NetworkPolicy.NO_CACHE)
+//                            .error(R.drawable.pixabay_logo)
                             .placeholder(R.mipmap.ic_launcher)
                             .into(choseImage);
                 }
@@ -195,6 +209,14 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
         switch (source) {
             case ChooseImageSourceDialog.IMAGE_SOURCE_INTERNET:
                 Intent startImageListActivity = new Intent(this, ImageListActivity.class);
+
+                if (!TextUtils.isEmpty(et_description.getText().toString())) {
+                    startImageListActivity.putExtra(
+                            ImageListActivity.EXTRA_DESC,
+                            et_description.getText().toString()
+                    );
+                }
+
                 startActivityForResult(startImageListActivity, REQUEST_IMAGE_INTERNET);
                 break;
             case ChooseImageSourceDialog.IMAGE_SOURCE_GALLERY:

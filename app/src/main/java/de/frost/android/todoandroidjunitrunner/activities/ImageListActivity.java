@@ -1,10 +1,10 @@
 package de.frost.android.todoandroidjunitrunner.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -21,6 +21,7 @@ import java.util.List;
 
 import de.frost.android.todoandroidjunitrunner.R;
 import de.frost.android.todoandroidjunitrunner.adapters.ImageAdapter;
+import de.frost.android.todoandroidjunitrunner.adapters.ImageAdapterListener;
 import de.frost.android.todoandroidjunitrunner.connection.RestClient;
 import de.frost.android.todoandroidjunitrunner.model.ImageModel;
 import de.frost.android.todoandroidjunitrunner.model.PixiImageResponse;
@@ -32,9 +33,11 @@ import retrofit2.Response;
  * Created by david on 24.02.17.
  */
 
-public class ImageListActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
+public class ImageListActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, ImageAdapterListener {
 
     private static final String TAG = ImageListActivity.class.getSimpleName();
+    public static final String EXTRA_URL = "EXTRA_URL";
+    public static final String EXTRA_DESC = "EXTRA_DESC";
     private EditText et_search;
     private Button btn_search;
     private RecyclerView recyclerView;
@@ -54,12 +57,15 @@ public class ImageListActivity extends AppCompatActivity implements View.OnClick
         et_search.addTextChangedListener(this);
         btn_search.setOnClickListener(this);
 
-//        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        adapter = new ImageAdapter();
+        adapter = new ImageAdapter(this);
         recyclerView.setAdapter(adapter);
 
+        if (getIntent().hasExtra(EXTRA_DESC)) {
+            et_search.setText(getIntent().getStringExtra(EXTRA_DESC));
+        }
     }
 
     @Override
@@ -110,4 +116,12 @@ public class ImageListActivity extends AppCompatActivity implements View.OnClick
         btn_search.setEnabled(!TextUtils.isEmpty(et_search.getText()));
     }
 
+    @Override
+    public void onItemClicked(int pos) {
+        Intent data = new Intent();
+        data.putExtra(EXTRA_URL, this.adapter.getList().get(pos).getUrl());
+        setResult(RESULT_OK, data);
+
+        finish();
+    }
 }

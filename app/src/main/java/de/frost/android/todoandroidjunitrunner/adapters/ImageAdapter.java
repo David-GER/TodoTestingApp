@@ -1,7 +1,6 @@
 package de.frost.android.todoandroidjunitrunner.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,28 +23,28 @@ import de.frost.android.todoandroidjunitrunner.model.ImageModel;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
     private static final String TAG = ImageAdapter.class.getSimpleName();
     private List<ImageModel> list;
+    private ImageAdapterListener listener;
 
-    public ImageAdapter() {
+    public ImageAdapter(ImageAdapterListener listener) {
+        this.listener = listener;
         this.list = new ArrayList<>();
     }
 
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "onCreateViewHolder: ");
 
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_image, parent, false);
 
-
-        ViewHolder vh = new ViewHolder(v);
+        ViewHolder vh = new ViewHolder(v, listener);
 
         return vh;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder: " + position);
-        ImageModel model = list.get(position);
+        final ImageModel model = list.get(position);
 
 //        holder.text.setText(model.getName());
 
@@ -69,15 +68,29 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public List<ImageModel> getList() {
+        return list;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView text;
         public ImageView image;
+        private ImageAdapterListener listener;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, final ImageAdapterListener listener) {
             super(view);
 
 //            text = (TextView) view.findViewById(R.id.text);
             image = (ImageView) view.findViewById(R.id.image);
+            this.listener = listener;
+
+            view.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onItemClicked(getAdapterPosition());
         }
     }
 }
