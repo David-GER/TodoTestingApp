@@ -23,12 +23,15 @@ import android.widget.Toast;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Inject;
+
 import de.frost.android.todoandroidjunitrunner.R;
+import de.frost.android.todoandroidjunitrunner.TodoApplication;
 import de.frost.android.todoandroidjunitrunner.dialog.ChooseImageSourceDialog;
 import de.frost.android.todoandroidjunitrunner.model.Todo;
 import de.frost.android.todoandroidjunitrunner.model.TodoManager;
 
-public class TodoActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, ChooseImageSourceDialog.ChooseImageSourceDialogListener {
+public class TodoActivity extends BaseActivity implements View.OnClickListener, TextWatcher, ChooseImageSourceDialog.ChooseImageSourceDialogListener {
 
     private static final String TAG = TodoActivity.class.getSimpleName();
 
@@ -43,10 +46,15 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
 
     private Todo currentTodo;
 
+    @Inject
+    public TodoManager todoManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
+
+        getApplicationComponent().inject(this);
 
         btn_save = (Button) findViewById(R.id.btn_save);
         et_description = (EditText) findViewById(R.id.description);
@@ -122,7 +130,7 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_save:
                 this.currentTodo.setDescription(et_description.getText().toString());
 
-                TodoManager.getInstance().insert(currentTodo);
+                todoManager.insert(currentTodo);
 
                 setResult(RESULT_OK);
                 finish();

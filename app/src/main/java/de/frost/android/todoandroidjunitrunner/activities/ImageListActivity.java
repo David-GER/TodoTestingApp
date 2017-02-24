@@ -36,7 +36,7 @@ import retrofit2.Response;
  * Created by david on 24.02.17.
  */
 
-public class ImageListActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, ImageAdapterListener {
+public class ImageListActivity extends BaseActivity implements View.OnClickListener, TextWatcher, ImageAdapterListener {
 
     private static final String TAG = ImageListActivity.class.getSimpleName();
     public static final String EXTRA_URL = "EXTRA_URL";
@@ -55,7 +55,7 @@ public class ImageListActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_list);
 
-        ((TodoApplication)getApplication()).getNetComponent().inject(this);
+        getApplicationComponent().inject(this);
 
         et_search = (EditText) findViewById(R.id.et_search);
         btn_search = (Button) findViewById(R.id.btn_search);

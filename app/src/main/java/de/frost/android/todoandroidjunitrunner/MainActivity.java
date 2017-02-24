@@ -8,11 +8,14 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import javax.inject.Inject;
+
+import de.frost.android.todoandroidjunitrunner.activities.BaseActivity;
 import de.frost.android.todoandroidjunitrunner.activities.TodoActivity;
 import de.frost.android.todoandroidjunitrunner.adapters.TodoAdapter;
 import de.frost.android.todoandroidjunitrunner.model.TodoManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private static final int REQUEST_TODO = 1001;
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -21,24 +24,24 @@ public class MainActivity extends AppCompatActivity {
     private TodoAdapter adapter;
     private TextView empty;
 
+    @Inject
+    public TodoManager todoManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getApplicationComponent().inject(this);
+
         addTodoButton = (Button) findViewById(R.id.addTodo);
-        addTodoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchTodo();
-            }
-        });
+        addTodoButton.setOnClickListener(v -> launchTodo());
 
         listView = (ListView) findViewById(R.id.list);
 
         adapter = new TodoAdapter(
                 this,
-                TodoManager.getInstance().queryAll()
+                this.todoManager.queryAll()
         );
 
         listView.setAdapter(adapter);
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_TODO:
 
                 if (resultCode == RESULT_OK) {
-                    adapter.changeCursor(TodoManager.getInstance().queryAll());
+                    adapter.changeCursor(this.todoManager.queryAll());
                 }
 
                 break;

@@ -6,21 +6,9 @@ package de.frost.android.todoandroidjunitrunner.model;
 
 public class TodoManager {
     private TodoDataSource source;
-    private static TodoManager manager;
 
-    private TodoManager(TodoDataSource source) {
+    public TodoManager(TodoDataSource source) {
         this.source = source;
-    }
-
-    public static void init(TodoDataSource dataSource) {
-        manager = new TodoManager(dataSource);
-    }
-
-    public static TodoManager getInstance() {
-        if (manager == null)
-            throw new IllegalStateException("This Manager has never been initialized!");
-
-        return manager;
     }
 
     public Todo query(long id) {

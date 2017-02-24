@@ -66,6 +66,7 @@ public class MainActivityUIAutomatorTest {
                 LAUNCH_TIMEOUT);
     }
 
+    /*
     @Test
     public void general() throws Exception {
 
@@ -149,7 +150,7 @@ public class MainActivityUIAutomatorTest {
         assertTrue(child.exists());
         assertEquals(tempTodoDesc, child.getText());
 
-    }
+    }*/
 
     @Ignore
     @Test

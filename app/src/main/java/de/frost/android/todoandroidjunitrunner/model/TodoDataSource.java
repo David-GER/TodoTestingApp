@@ -6,7 +6,7 @@ import de.frost.android.todoandroidjunitrunner.model.TodoDbHelper.TodoCursor;
  * Created by david on 23.02.17.
  */
 
-interface TodoDataSource {
+public interface TodoDataSource {
     public long insert(Todo todo);
     public int update(Todo todo);
     public int remove(Todo todo);
