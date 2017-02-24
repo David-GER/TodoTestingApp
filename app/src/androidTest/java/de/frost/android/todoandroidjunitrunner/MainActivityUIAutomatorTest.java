@@ -66,7 +66,6 @@ public class MainActivityUIAutomatorTest {
                 LAUNCH_TIMEOUT);
     }
 
-    @Ignore
     @Test
     public void general() throws Exception {
 
@@ -74,7 +73,7 @@ public class MainActivityUIAutomatorTest {
                 new TodoDbHelper(InstrumentationRegistry.getTargetContext())
         );
 
-        TodoManager.getInstance().removeAll(); //TODO AFTER OTHER STUFF
+        TodoManager.getInstance().removeAll();
 
         final String tempTodoDesc = "This is a automated todo!";
 

@@ -6,6 +6,9 @@
     <string name="empty_text">There are no Todos!</string>
     <string name="dialog_chose_image">Where do you want to get your image from?</string>
     <string name="cancel">Cancel</string>
+    <string name="enter_search_term">Enter search term</string>
+    <string name="search">Search</string>
+    <string name="image_name">Image Name</string>
 
     <string-array name="image_sources" >
         <item>Internet</item>

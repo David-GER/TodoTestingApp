@@ -8,6 +8,8 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import de.frost.android.todoandroidjunitrunner.activities.TodoActivity;
+
 import static org.junit.Assert.*;
 import static org.robolectric.Shadows.shadowOf;
 

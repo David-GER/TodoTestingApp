@@ -1,4 +1,4 @@
-package de.frost.android.todoandroidjunitrunner;
+package de.frost.android.todoandroidjunitrunner.activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import de.frost.android.todoandroidjunitrunner.R;
 import de.frost.android.todoandroidjunitrunner.dialog.ChooseImageSourceDialog;
 import de.frost.android.todoandroidjunitrunner.model.Todo;
 import de.frost.android.todoandroidjunitrunner.model.TodoManager;
@@ -29,9 +30,12 @@ import de.frost.android.todoandroidjunitrunner.model.TodoManager;
 public class TodoActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, ChooseImageSourceDialog.ChooseImageSourceDialogListener {
 
     private static final String TAG = TodoActivity.class.getSimpleName();
+
     public static final String TODO_EXTRA = "TODO_EXTRA";
-    private static final int REQUEST_IMAGE = 1002;
+    private static final int REQUEST_IMAGE_GALLERY = 1002;
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 1003;
+    private static final int REQUEST_IMAGE_INTERNET = 1004;
+
     private Button btn_save;
     private EditText et_description;
     private ImageView choseImage;
@@ -74,7 +78,7 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-            case REQUEST_IMAGE:
+            case REQUEST_IMAGE_GALLERY:
 
                 if (resultCode == RESULT_OK) {
 
@@ -124,7 +128,7 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
     private void getImageFromGallery() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, REQUEST_IMAGE);
+        startActivityForResult(photoPickerIntent, REQUEST_IMAGE_GALLERY);
     }
 
     private boolean askUserToGetImage() {
@@ -190,6 +194,8 @@ public class TodoActivity extends AppCompatActivity implements View.OnClickListe
     public void done(int source) {
         switch (source) {
             case ChooseImageSourceDialog.IMAGE_SOURCE_INTERNET:
+                Intent startImageListActivity = new Intent(this, ImageListActivity.class);
+                startActivityForResult(startImageListActivity, REQUEST_IMAGE_INTERNET);
                 break;
             case ChooseImageSourceDialog.IMAGE_SOURCE_GALLERY:
                 if (askUserToGetImage()) {

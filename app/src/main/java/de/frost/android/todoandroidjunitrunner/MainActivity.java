@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import de.frost.android.todoandroidjunitrunner.activities.TodoActivity;
 import de.frost.android.todoandroidjunitrunner.adapters.TodoAdapter;
 import de.frost.android.todoandroidjunitrunner.model.TodoManager;
 

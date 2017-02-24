@@ -23,8 +23,12 @@
 
 
         <activity
-            android:name=".TodoActivity"
+            android:name=".activities.TodoActivity"
             android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".activities.ImageListActivity"
+            android:parentActivityName=".activities.TodoActivity" />
     </application>
 
 </manifest>

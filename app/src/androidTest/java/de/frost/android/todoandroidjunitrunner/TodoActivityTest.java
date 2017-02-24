@@ -11,14 +11,13 @@ import org.junit.Test;
 
 import java.lang.reflect.Field;
 
+import de.frost.android.todoandroidjunitrunner.activities.TodoActivity;
 import de.frost.android.todoandroidjunitrunner.model.Todo;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 import static android.support.test.espresso.Espresso.*;
 import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.intent.Intents.*;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.*;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static android.support.test.espresso.assertion.ViewAssertions.*;
 
