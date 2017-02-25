@@ -3,7 +3,6 @@ package de.frost.android.todoandroidjunitrunner.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -18,11 +17,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.inject.Inject;
 
 import de.frost.android.todoandroidjunitrunner.R;
-import de.frost.android.todoandroidjunitrunner.TodoApplication;
 import de.frost.android.todoandroidjunitrunner.adapters.ImageAdapter;
 import de.frost.android.todoandroidjunitrunner.adapters.ImageAdapterListener;
 import de.frost.android.todoandroidjunitrunner.connection.RestClient;
@@ -91,6 +90,18 @@ public class ImageListActivity extends BaseActivity implements View.OnClickListe
 
                 if (response.isSuccessful()) {
                     List<ImageModel> body = response.body().getList();
+
+                    if (body.size() > 0) {
+                        //Add Pixabay image added to the search result to show the user where the images came from.
+
+                        body.add(new ImageModel(
+                                "Pixabay",
+                                "https://pixabay.com/static/img/logo_square.png",
+                                "https://pixabay.com/static/img/logo_square.png")
+                        );
+                    }
+
+
                     adapter.setItems(body);
                 } else {
                     Toast.makeText(ImageListActivity.this, "There has been an error. Code :" + response.code(), Toast.LENGTH_LONG)
@@ -125,6 +136,12 @@ public class ImageListActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onItemClicked(int pos) {
+        if (this.adapter.getList().get(pos).getUrl().equals("https://pixabay.com/static/img/logo_square.png")) {
+            Toast.makeText(this, "These images are provided by pixabay.com!", Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+
         Intent data = new Intent();
         data.putExtra(EXTRA_URL, this.adapter.getList().get(pos).getUrl());
         setResult(RESULT_OK, data);
